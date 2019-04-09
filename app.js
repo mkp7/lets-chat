@@ -27,11 +27,7 @@ function getId (length) {
 io.on('connection', function (socket) {
   socket.on('create', _ => {
     const id = getId(6)
-    sessions[id] = {
-      id: id,
-      caller: socket,
-      callee: null
-    }
+    sessions[id] = { id: id, caller: socket, callee: null }
     socket.emit('created', id)
   })
 
@@ -39,8 +35,8 @@ io.on('connection', function (socket) {
     if (sessions[id] !== undefined && sessions[id].callee === null) {
       sessions[id].callee = socket
 
-      socket.on('description', desc => sessions[id].caller.emit('description', desc))
-      sessions[id].caller.on('description', desc => socket.emit('description', desc))
+      socket.on('offer', desc => sessions[id].caller.emit('offer', desc))
+      sessions[id].caller.on('answer', desc => socket.emit('answer', desc))
 
       socket.on('icecandidate', cand => sessions[id].caller.emit('icecandidate', cand))
       sessions[id].caller.on('icecandidate', cand => socket.emit('icecandidate', cand))
@@ -49,7 +45,7 @@ io.on('connection', function (socket) {
       sessions[id].caller.on('leave', _ => socket.emit('leave', 0))
 
       socket.emit('joined', 0)
-      sessions[id].caller.emit('joined', 0)
+      // sessions[id].caller.emit('joined', 0)
     }
 
     socket.emit('invalid', 0)
@@ -62,4 +58,4 @@ io.on('connection', function (socket) {
   })
 })
 
-app.listen(port, () => console.log(`bound ${port}`))
+http.listen(port, () => console.log(`bound ${port}`))
