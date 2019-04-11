@@ -1,29 +1,43 @@
 (function () {
+  const socket = io()
+  const localStreamEl = document.getElementById('local_stream')
+  const peerStreamEl = document.getElementById('peer_stream')
+  let localStream = null
+
   // Set things up, connect event listeners, etc.
+  function newRTCConn () {
+    const conn = new RTCPeerConnection()
 
-  function startup () {
-    const socket = io()
-    const create = document.getElementById('create')
-    const join = document.getElementById('join')
-    const leave = document.getElementById('leave')
-    const peerid = document.getElementById('peerid')
-    const localStreamEl = document.getElementById('local_stream')
-    const peerStreamEl = document.getElementById('peer_stream')
-    let sessionId = document.getElementById('session_id')
-    let myconn = new RTCPeerConnection()
-
-    myconn.onicecandidate = e => !e.candidate ||
+    conn.onicecandidate = e => !e.candidate ||
       socket.emit('icecandidate', e.candidate)
 
-    myconn.ontrack = event => {
+    conn.ontrack = event => {
       peerStreamEl.srcObject = event.streams[0]
       // document.getElementById('hangup-button').disabled = false
     }
 
+    conn.createDataChannel('sendChannel')
+
+    localStreamEl.srcObject = localStream
+    localStream.getTracks().forEach(track => conn.addTrack(track, localStream))
+
+    return conn
+  }
+
+  function startup () {
+    const create = document.getElementById('create')
+    const join = document.getElementById('join')
+    const leave = document.getElementById('leave')
+    const peerid = document.getElementById('peerid')
+    let sessionId = document.getElementById('session_id')
+    let myconn = null
+
+    // get peer media
     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-      .then(localStream => {
-        localStreamEl.srcObject = localStream
-        localStream.getTracks().forEach(track => myconn.addTrack(track, localStream))
+      .then(ls => {
+        localStream = ls
+        // localStreamEl.srcObject = localStream
+        // localStream.getTracks().forEach(track => conn.addTrack(track, localStream))
       })
       .catch(handleGetUserMediaError)
 
@@ -34,6 +48,8 @@
     socket.on('joined', _ => {
       // setup offer ...
 
+      myconn = newRTCConn()
+
       myconn.createOffer()
         .then(offer => myconn.setLocalDescription(offer))
         .then(() => socket.emit('offer', myconn.localDescription))
@@ -42,6 +58,8 @@
 
     socket.on('offer', desc => {
       // set offer
+
+      myconn = newRTCConn()
 
       myconn.setRemoteDescription(desc)
         .then(() => myconn.createAnswer())
