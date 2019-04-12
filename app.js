@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
-const port = process.env.PORT | 3000
 
 app.use(express.static('public'))
 
@@ -60,4 +59,4 @@ io.on('connection', socket => {
   socket.on('disconnect', _ => console.log('user disconnected'))
 })
 
-http.listen(port, () => console.log(`bound ${port}`))
+http.listen(process.env.PORT || 3000, () => console.log(`bound`))
