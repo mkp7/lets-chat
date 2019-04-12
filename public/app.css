@@ -36,7 +36,7 @@ body {
   border: 1px dotted rgb(244, 118, 95);
   flex: 1 200px;
   margin: 3px;
-
+  text-align: center;
 }
 
 #create:disabled, #session_id:disabled, #peerid:disabled, #join:disabled, #leave:disabled {
