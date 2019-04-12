@@ -36,6 +36,12 @@ body {
   border: 1px dotted rgb(244, 118, 95);
   flex: 1 200px;
   margin: 3px;
+
+}
+
+#create:disabled, #session_id:disabled, #peerid:disabled, #join:disabled, #leave:disabled {
+  text-decoration: line-through;
+  opacity: 0.4;
 }
 
 #leave {
