@@ -1,4 +1,43 @@
+@font-face {
+  font-family: "CnLi";
+  src: url("/Champagne\ &\ Limousines.ttf");
+}
+
 body {
-  font-family: "Lucida Grande", "Arial", sans-serif;
-  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+
+  /* This centers our sketch horizontally. */
+  justify-content: center;
+
+  /* This centers our sketch vertically. */
+  align-items: center;
+}
+
+* {
+  font-size: 26px;
+  /* font-weight: bold; */
+  font-family: 'CnLi';
+  background: rgb(103, 75, 124);
+  color: rgb(244, 118, 95);
+  box-sizing: border-box;
+}
+
+.create, .join, .streams {
+  display: flex;
+  width: 900px;
+}
+
+.streams {
+  display: flex;
+}
+
+#local_stream, #peer_stream, #create, #session_id, #peerid, #join {
+  border: 1px dotted rgb(244, 118, 95);
+  flex: 1 200px;
+  margin: 3px;
+}
+
+#leave {
+  border: 1px dotted rgb(244, 118, 95);
 }

@@ -1,27 +1,27 @@
 <!doctype html>
 <html>
 <head>
-  <title>WebRTC - @GeekSkool</title>
+  <title>WebRTC - @GEEKSKOOL</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="app.css" type="text/css" media="all">
 </head>
 <body>
-  <h1>WebRTC - @GeekSkool</h1>
+  <h2>WebRTC - @GEEKSKOOL</h2>
   
-  <div class="controlbox">
+  <div class="create">
     <button id="create">Create</button>
-    <input id="session_id" type="text" disabled>
-    <br><br>
-    <input id="peerid" type="text">
+    <input id="session_id" type="text" autocomplete="off">
+  </div>
+  <div class="join">
+    <input id="peerid" type="text" autocomplete="off">
     <button id="join">Join</button>
-    <br><br>
-    <button id="leave" disabled>Leave</button>
   </div>
   
   <div class="streams">
       <video id="local_stream" autoplay muted></video>
       <video id="peer_stream" autoplay muted></video>
   </div>
+  <button id="leave" disabled>Leave</button>
   <script src="adapter.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="app.js"></script>

@@ -34,11 +34,7 @@
 
     // get peer media
     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-      .then(ls => {
-        localStream = ls
-        // localStreamEl.srcObject = localStream
-        // localStream.getTracks().forEach(track => conn.addTrack(track, localStream))
-      })
+      .then(ls => (localStream = ls))
       .catch(handleGetUserMediaError)
 
     // socket event listeners
@@ -50,6 +46,10 @@
 
       myconn = newRTCConn()
 
+      join.disabled = true
+      create.disabled = true
+      leave.disabled = false
+
       myconn.createOffer()
         .then(offer => myconn.setLocalDescription(offer))
         .then(() => socket.emit('offer', myconn.localDescription))
@@ -60,6 +60,10 @@
       // set offer
 
       myconn = newRTCConn()
+
+      join.disabled = true
+      create.disabled = true
+      leave.disabled = false
 
       myconn.setRemoteDescription(desc)
         .then(() => myconn.createAnswer())
@@ -84,15 +88,27 @@
     socket.on('leave', _ => {
       // close and unset connection
       myconn.close()
+      join.disabled = false
+      create.disabled = false
+      leave.disabled = true
+      localStreamEl.srcObject = null
+      peerStreamEl.srcObject = null
     })
 
     // Set event listeners for user interface widgets
 
     create.onclick = () => socket.emit('create', 0)
     join.onclick = () => socket.emit('join', peerid.value)
-    leave.onclick = () => socket.emit('leave', 0)
-    // disconnectButton.addEventListener('click', disconnectPeers, false)
-    // sendButton.addEventListener('click', sendMessage, false)
+    leave.onclick = () => {
+      // close and unset connection
+      myconn.close()
+      join.disabled = false
+      create.disabled = false
+      leave.disabled = true
+      localStreamEl.srcObject = null
+      peerStreamEl.srcObject = null
+      socket.emit('leave', 0)
+    }
   }
 
   function handleAddCandidateError () {
